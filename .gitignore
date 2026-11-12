@@ -1,0 +1,35 @@
+# Android / Gradle / Kotlin local state
+.gradle/
+.kotlin/
+.idea/
+*.iml
+local.properties
+**/build/
+.cxx/
+.externalNativeBuild/
+captures/
+
+# Workstation, signing and local configuration
+.DS_Store
+Thumbs.db
+.serena/
+.agents/
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+private/
+
+# Generated packages and local research / test evidence
+*.apk
+*.aab
+*.hprof
+/dist/
+/audits/
+/design/
+/references/
+/docs/PLAN.md
+/docs/REMOTE.md
+/docs/EMULATOR-NETWORK.md
+/docs/INTERACTION-RULES.md
