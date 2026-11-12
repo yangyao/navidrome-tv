@@ -1,6 +1,11 @@
 package com.navidrome.tv
 
 import android.content.Intent
+import android.view.KeyEvent
+import androidx.test.core.app.ActivityScenario
+import androidx.lifecycle.ViewModelProvider
+import com.navidrome.tv.ui.AppViewModel
+import com.navidrome.tv.ui.nav.Screen
 import coil.imageLoader
 import coil.decode.DataSource
 import coil.request.SuccessResult
@@ -36,6 +41,7 @@ class PlaybackRegressionTest {
         server = Fixture()
         app.settings.saveConnection("http://127.0.0.1:${server.port}", "fixture", "fixture-only")
         app.repository.clearCaches()
+        app.settings.queueSnapshot = null
     }
     @After fun teardown() {
         main { PlaybackService.get()?.stopPlayback(); app.stopService(Intent(app, PlaybackService::class.java)) }
@@ -177,6 +183,91 @@ class PlaybackRegressionTest {
             main { service.stopPlayback(); app.stopService(Intent(app, PlaybackService::class.java)) }
             waitFor { PlaybackService.get() == null }
             assertFalse(owned.isActive)
+        }
+    }
+
+    private fun visibleText(text: String): Boolean {
+        val root = instrumentation.uiAutomation.rootInActiveWindow ?: return false
+        val pending = java.util.ArrayDeque<android.view.accessibility.AccessibilityNodeInfo>()
+        pending.add(root)
+        while (pending.isNotEmpty()) {
+            val node = pending.removeFirst()
+            if (node.isVisibleToUser && node.text?.toString() == text) return true
+            for (index in 0 until node.childCount) node.getChild(index)?.let { pending.add(it) }
+        }
+        return false
+    }
+    private fun press(code: Int) = instrumentation.sendKeyDownUpSync(code)
+
+    @Test fun songActionsDismissAndReflectPlaybackWithoutLeakingIntoOtherScreens() {
+        ActivityScenario.launch(MainActivity::class.java).use { activity ->
+            lateinit var vm: AppViewModel
+            activity.onActivity { vm = ViewModelProvider(it)[AppViewModel::class.java] }
+            waitFor { visibleText("Song 0") }
+            fun open(index: Int = 0) {
+                main { vm.openSongActions(song(index), batch(100), index) }
+                waitFor { visibleText("歌曲操作") }
+            }
+            fun dismissed() = waitFor { vm.ui.value.songActions == null && !visibleText("歌曲操作") }
+
+            open()
+            waitFor { visibleText("播放") }
+            press(KeyEvent.KEYCODE_DPAD_LEFT)
+            dismissed()
+            open()
+            press(KeyEvent.KEYCODE_BACK)
+            dismissed()
+
+            open()
+            press(KeyEvent.KEYCODE_DPAD_RIGHT) // Cannot escape into the background.
+            press(KeyEvent.KEYCODE_DPAD_CENTER)
+            dismissed()
+            at("0"); waitFor { PlaybackService.playbackState.value.playing }
+            val queue = PlaybackService.playbackState.value.queue
+            open()
+            waitFor { visibleText("暂停") }
+            PlaybackAccess.togglePause(app)
+            waitFor { visibleText("继续播放") }
+            PlaybackAccess.togglePause(app)
+            waitFor { visibleText("暂停") }
+            press(KeyEvent.KEYCODE_DPAD_CENTER)
+            dismissed()
+            waitFor { !PlaybackService.playbackState.value.playing }
+            assertSame(queue, PlaybackService.playbackState.value.queue)
+            open()
+            waitFor { visibleText("继续播放") }
+            press(KeyEvent.KEYCODE_DPAD_CENTER)
+            dismissed()
+            waitFor { PlaybackService.playbackState.value.playing }
+            assertSame(queue, PlaybackService.playbackState.value.queue)
+            open(1)
+            waitFor { visibleText("播放") }
+            press(KeyEvent.KEYCODE_DPAD_LEFT)
+            dismissed()
+
+            open()
+            // The selected current track has a direct route to the full player.
+            press(KeyEvent.KEYCODE_DPAD_DOWN)
+            press(KeyEvent.KEYCODE_DPAD_CENTER)
+            waitFor { vm.ui.value.screen == Screen.NowPlaying }
+            dismissed()
+            assertNull(vm.ui.value.songActionsSource)
+            waitFor { !visibleText("所有歌曲") }
+            press(KeyEvent.KEYCODE_BACK)
+            waitFor { vm.ui.value.screen is Screen.Songs }
+
+            open()
+            main { vm.navigate(Screen.NowPlaying) }
+            dismissed()
+            assertNull(vm.ui.value.songActionsSource)
+            assertEquals(-1, vm.ui.value.songActionsIndex)
+            waitFor { !visibleText("所有歌曲") }
+            press(KeyEvent.KEYCODE_BACK)
+            waitFor { vm.ui.value.screen is Screen.Songs }
+            open()
+            main { vm.switchNav(com.navidrome.tv.ui.components.NavItem.SETTINGS) }
+            dismissed()
+            assertEquals(Screen.Settings, vm.ui.value.screen)
         }
     }
 

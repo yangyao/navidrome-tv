@@ -53,6 +53,7 @@ class AppViewModel(private val app: TvApp) : ViewModel() {
     private val screenCache = com.navidrome.tv.util.ScreenCache()
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> cached(key: String, create: () -> T): T = screenCache.getOrPut(key, create)
+    private var actionFocusJob: Job? = null
     private var countdownJob: Job? = null
     private val pairingLock = Any()
     private var pairingGeneration = 0
@@ -205,9 +206,10 @@ class AppViewModel(private val app: TvApp) : ViewModel() {
     // ---- 導覽 ----
 
     fun navigate(screen: Screen) {
-        if (_ui.value.screen == screen) return
+        if (_ui.value.screen == screen) { closeSongActions(); return }
+        actionFocusJob?.cancel()
         backStack.add(_ui.value.screen)
-        _ui.value = _ui.value.copy(screen = screen)
+        _ui.value = _ui.value.withoutSongActions().copy(screen = screen)
     }
 
     fun switchNav(item: NavItem) {
@@ -225,8 +227,9 @@ class AppViewModel(private val app: TvApp) : ViewModel() {
             NavItem.NOW_PLAYING -> Screen.NowPlaying
             NavItem.QUEUE -> Screen.Queue
         }
+        actionFocusJob?.cancel()
         backStack.clear()
-        _ui.value = _ui.value.copy(screen = screen)
+        _ui.value = _ui.value.withoutSongActions().copy(screen = screen)
     }
 
     /** Back：先關閉覆蓋層，再返回上頁。 */
@@ -275,9 +278,32 @@ class AppViewModel(private val app: TvApp) : ViewModel() {
             songActionsQueueSource = queueSource)
     }
 
+    private fun UiState.withoutSongActions() = copy(songActions = null, songActionsSource = null,
+        songActionsIndex = -1, songActionsQueueSource = QueueSource.AllSongs())
+
     fun closeSongActions() {
-        _ui.value = _ui.value.copy(songActions = null)
-        viewModelScope.launch { delay(80); com.navidrome.tv.ui.components.FocusBus.requestContent() }
+        if (_ui.value.songActions == null) return
+        val origin = _ui.value.screen
+        _ui.value = _ui.value.withoutSongActions()
+        actionFocusJob?.cancel()
+        actionFocusJob = viewModelScope.launch {
+            delay(80)
+            if (_ui.value.screen == origin && _ui.value.songActions == null)
+                com.navidrome.tv.ui.components.FocusBus.requestContent()
+        }
+    }
+
+    fun performSongPrimaryAction() {
+        val state = _ui.value
+        val song = state.songActions ?: return
+        if (playback.value.currentSong?.id == song.id) {
+            PlaybackAccess.togglePause(app)
+        } else {
+            val source = state.songActionsSource ?: listOf(song)
+            val index = state.songActionsIndex.takeIf { it in source.indices } ?: 0
+            PlaybackAccess.playFrom(app, source, index, state.songActionsQueueSource)
+        }
+        closeSongActions()
     }
 
     fun showResumePrompt() {
