@@ -38,8 +38,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.navidrome.tv.R
 import com.navidrome.tv.TvApp
 import com.navidrome.tv.model.Playlist
 import com.navidrome.tv.model.QueueSource
@@ -83,12 +86,12 @@ fun PlaylistsScreen(vm: AppViewModel) {
     com.navidrome.tv.ui.components.ContentFocus(focusRequester, playlists.isNotEmpty())
 
     Column(Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp, top = 28.dp)) {
-        ScreenHeader("歌单", if (playlists.isNotEmpty()) "(${playlists.size} 个歌单)" else null)
+        ScreenHeader(stringResource(R.string.nav_playlists), if (playlists.isNotEmpty()) "(${pluralStringResource(R.plurals.playlists_count, playlists.size, playlists.size)})" else null)
         if (loading) {
             LoadingState(Modifier.fillMaxSize())
         } else if (playlists.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                EmptyState(Icons.Filled.Shuffle, "服务器上没有歌单", "可以先从所有歌曲、歌手或专辑开始播放。", "所有歌曲",
+                EmptyState(Icons.Filled.Shuffle, stringResource(R.string.empty_playlists_title), stringResource(R.string.empty_playlists_body), stringResource(R.string.nav_songs),
                     { vm.switchNav(com.navidrome.tv.ui.components.NavItem.SONGS) })
             }
         } else {
@@ -123,7 +126,7 @@ private fun PlaylistCard(playlist: Playlist, focusRequester: FocusRequester?, on
         CoverImage(playlist.coverArt, 200.dp, adaptive = true)
         Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             PrimaryText(playlist.name, fontSize = 21)
-            SecondaryText("${playlist.songCount} 首歌曲", Modifier.padding(top = 2.dp), 16)
+            SecondaryText(pluralStringResource(R.plurals.songs_count, playlist.songCount, playlist.songCount), Modifier.padding(top = 2.dp), 16)
         }
     }
 }
@@ -147,7 +150,7 @@ fun PlaylistDetailScreen(vm: AppViewModel, playlistId: String, name: String) {
     com.navidrome.tv.ui.components.ContentFocus(focusRequester, songs.isNotEmpty())
 
     Column(Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp, top = 20.dp)) {
-        com.navidrome.tv.ui.components.PageHeader("歌单") { vm.back() }
+        com.navidrome.tv.ui.components.PageHeader(stringResource(R.string.nav_playlists)) { vm.back() }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -156,13 +159,14 @@ fun PlaylistDetailScreen(vm: AppViewModel, playlistId: String, name: String) {
             CoverImage(playlist?.coverArt, 64.dp)
             Column(Modifier.weight(1f)) {
                 PrimaryText(name, fontSize = 34)
-                SecondaryText("${playlist?.songCount ?: songs.size} 首歌曲", Modifier.padding(top = 4.dp), 18)
+                val trackCount = playlist?.songCount ?: songs.size
+                SecondaryText(pluralStringResource(R.plurals.songs_count, trackCount, trackCount), Modifier.padding(top = 4.dp), 18)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                PillButton("播放全部", Icons.Filled.PlayArrow, filled = true) {
+                PillButton(stringResource(R.string.play_all), Icons.Filled.PlayArrow, filled = true) {
                     if (songs.isNotEmpty()) PlaybackAccess.playFrom(context, songs, 0, QueueSource.PlaylistSongs(playlistId, name))
                 }
-                PillButton("随机播放", Icons.Filled.Shuffle, filled = false) {
+                PillButton(stringResource(R.string.shuffle_play), Icons.Filled.Shuffle, filled = false) {
                     if (songs.isNotEmpty()) PlaybackAccess.playFrom(context, songs.shuffled(), 0, QueueSource.PlaylistSongs(playlistId, name))
                 }
             }
@@ -212,28 +216,28 @@ fun FavoritesScreen(vm: AppViewModel) {
 
     Column(Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp, top = 28.dp)) {
         ScreenHeader(
-            "收藏",
-            if (songs.isNotEmpty()) "${songs.size} 首歌曲" else null,
+            stringResource(R.string.nav_favorites),
+            if (songs.isNotEmpty()) pluralStringResource(R.plurals.songs_count, songs.size, songs.size) else null,
             trailing = {
                 if (tab == 0 && songs.isNotEmpty()) Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    PillButton("播放全部", Icons.Filled.PlayArrow, filled = true) {
+                    PillButton(stringResource(R.string.play_all), Icons.Filled.PlayArrow, filled = true) {
                         if (songs.isNotEmpty()) PlaybackAccess.playFrom(context, songs, 0, QueueSource.Starred)
                     }
-                    PillButton("随机播放", Icons.Filled.Shuffle, filled = false) {
+                    PillButton(stringResource(R.string.shuffle_play), Icons.Filled.Shuffle, filled = false) {
                         if (songs.isNotEmpty()) PlaybackAccess.playFrom(context, songs.shuffled(), 0, QueueSource.Starred)
                     }
                 }
             },
         )
-        TabRow(listOf("歌曲", "专辑"), tab) { tab = it }
+        TabRow(listOf(stringResource(R.string.songs_tab), stringResource(R.string.albums_tab)), tab) { tab = it }
         when {
             loading -> LoadingState(Modifier.fillMaxSize())
             tab == 0 && songs.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 EmptyState(
                     icon = Icons.Filled.FavoriteBorder,
-                    title = "还没有收藏的歌曲",
-                    body = "收藏的歌曲会显示在这里。",
-                    actionText = "浏览所有歌曲",
+                    title = stringResource(R.string.empty_favorites_title),
+                    body = stringResource(R.string.empty_favorites_body),
+                    actionText = stringResource(R.string.browse_all_songs),
                     onAction = { vm.switchNav(com.navidrome.tv.ui.components.NavItem.SONGS) },
                 )
             }
@@ -256,7 +260,7 @@ fun FavoritesScreen(vm: AppViewModel) {
                             trailing = {
                                 androidx.compose.material3.Icon(
                                     Icons.Filled.Favorite,
-                                    contentDescription = "已收藏",
+                                    contentDescription = stringResource(R.string.favorited_desc),
                                     tint = com.navidrome.tv.ui.theme.Heart,
                                     modifier = Modifier.padding(start = 8.dp).width(24.dp),
                                 )
@@ -266,7 +270,7 @@ fun FavoritesScreen(vm: AppViewModel) {
                 }
             }
             tab == 1 && albums.isEmpty() -> Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                EmptyState(Icons.Filled.FavoriteBorder, "还没有收藏的专辑", "收藏的专辑会显示在这里。", "浏览专辑",
+                EmptyState(Icons.Filled.FavoriteBorder, stringResource(R.string.empty_fav_albums_title), stringResource(R.string.empty_fav_albums_body), stringResource(R.string.browse_albums),
                     { vm.switchNav(com.navidrome.tv.ui.components.NavItem.ALBUMS) })
             }
             else -> {

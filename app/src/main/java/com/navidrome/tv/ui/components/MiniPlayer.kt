@@ -17,8 +17,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.navidrome.tv.R
 import com.navidrome.tv.playback.PlaybackAccess
 import com.navidrome.tv.playback.PlaybackState
 import com.navidrome.tv.playback.PlaybackService
@@ -56,21 +58,22 @@ fun MiniPlayerBar(state: PlaybackState, onOpenNowPlaying: () -> Unit, modifier: 
 fun TransportControls(state: PlaybackState, compact: Boolean, onPrev: () -> Unit, onToggle: () -> Unit,
     onNext: () -> Unit, modifier: Modifier = Modifier, pauseFocusRequester: FocusRequester? = null) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (compact) 12.dp else 20.dp)) {
-        TransportIcon(Icons.Filled.SkipPrevious, !compact, onPrev, "上一首")
+        TransportIcon(Icons.Filled.SkipPrevious, !compact, onPrev, stringResource(R.string.previous))
         FocusBox(onToggle, modifier = Modifier.size(if (compact) 52.dp else 68.dp)
             .then(if (pauseFocusRequester != null) Modifier.focusRequester(pauseFocusRequester) else Modifier),
             shape = CircleShape, unfocusedBg = BgPanel, scaleOnFocus = false) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(if (state.playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                    if (state.playing) "暂停" else "播放", tint = Accent, modifier = Modifier.size(if (compact) 28.dp else 36.dp))
+                    stringResource(if (state.playing) R.string.action_pause else R.string.action_play),
+                    tint = Accent, modifier = Modifier.size(if (compact) 28.dp else 36.dp))
             }
         }
-        TransportIcon(Icons.Filled.SkipNext, !compact, onNext, "下一首")
+        TransportIcon(Icons.Filled.SkipNext, !compact, onNext, stringResource(R.string.next))
     }
 }
 
 @Composable
-fun TransportIcon(icon: ImageVector, big: Boolean, onClick: () -> Unit, label: String = "播放控制") {
+fun TransportIcon(icon: ImageVector, big: Boolean, onClick: () -> Unit, label: String = stringResource(R.string.playback_control)) {
     FocusBox(onClick, modifier = Modifier.size(if (big) 56.dp else 40.dp), shape = CircleShape,
         unfocusedBg = BgPanel, scaleOnFocus = false) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

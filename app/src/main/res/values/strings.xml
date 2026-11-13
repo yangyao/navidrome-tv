@@ -1,64 +1,156 @@
 <resources>
     <string name="app_name">Navidrome TV</string>
-    <string name="brand_subtitle">音乐，从这里开始。</string>
-    <string name="nav_songs">所有歌曲</string>
-    <string name="nav_artists">歌手</string>
-    <string name="nav_albums">专辑</string>
-    <string name="nav_playlists">歌单</string>
-    <string name="nav_favorites">收藏</string>
-    <string name="nav_settings">设定</string>
-    <string name="shuffle_play">随机播放</string>
-    <string name="play_all">播放全部</string>
-    <string name="now_playing">正在播放</string>
-    <string name="queue">播放队列</string>
-    <string name="queue_from">来源：%1$s</string>
-    <string name="play_next">下一首播放</string>
-    <string name="add_to_queue">加入队列</string>
-    <string name="play_now">立即播放</string>
-    <string name="view_artist">查看歌手</string>
-    <string name="view_album">查看专辑</string>
-    <string name="close">关闭</string>
-    <string name="song_actions">歌曲操作</string>
-    <string name="back">返回</string>
-    <string name="songs_tab">歌曲</string>
-    <string name="albums_tab">专辑</string>
-    <string name="settings_relogin">用手机重新设定</string>
-    <string name="settings_quality">音质</string>
-    <string name="quality_original">原音</string>
-    <string name="quality_compat">兼容模式</string>
-    <string name="settings_clear_cache">清除封面缓存</string>
-    <string name="settings_about">关于</string>
-    <string name="settings_logout">登出</string>
-    <string name="connected">已连接</string>
-    <string name="server">音乐服务器</string>
-    <string name="user_prefix">用户：%1$s</string>
-    <string name="login_title">用手机扫码设定</string>
-    <string name="login_step1">手机连上家中 Wi-Fi</string>
-    <string name="login_step2">扫描右侧二维码</string>
-    <string name="login_step3">在手机填写音乐服务器信息</string>
-    <string name="login_note_tv">电视不需要输入任何文字。</string>
-    <string name="login_note_lan">电视有线连接也可以。</string>
-    <string name="qr_renew">重新生成</string>
-    <string name="qr_help">连接说明</string>
-    <string name="qr_expires_in">配对码将于 %1$s 后更新</string>
-    <string name="connecting_title">正在连接音乐服务器</string>
-    <string name="connecting_subtitle">已收到手机设定，请稍候。</string>
-    <string name="connecting_step1">手机已连接</string>
-    <string name="connecting_step2">正在验证</string>
-    <string name="connecting_step3">开启歌曲清单</string>
-    <string name="connecting_cancel">取消连接</string>
-    <string name="error_server_title">暂时连不上音乐服务器</string>
-    <string name="error_server_body">请确认服务器与网络连接，再试一次。</string>
-    <string name="retry_connect">重新连接</string>
-    <string name="empty_favorites_title">还没有收藏的歌曲</string>
-    <string name="empty_favorites_body">收藏的歌曲会显示在这里。</string>
-    <string name="browse_all_songs">浏览所有歌曲</string>
-    <string name="open_queue">播放队列</string>
-    <string name="back_to_list">返回清单</string>
-    <string name="next_up">接下来播放</string>
-    <string name="songs_count">%1$d 首歌曲</string>
-    <string name="albums_count">%1$d 张专辑</string>
-    <string name="artists_count">%1$d 位歌手</string>
-    <string name="album_tracks_fmt">%1$d 首歌曲 · %2$d 分鐘</string>
-    <string name="hint_remote">上下選歌 · 确认播放 · 向右更多</string>
+    <string name="brand_subtitle">Music starts here.</string>
+    <string name="nav_songs">All songs</string>
+    <string name="nav_artists">Artists</string>
+    <string name="nav_albums">Albums</string>
+    <string name="nav_playlists">Playlists</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_settings">Settings</string>
+    <string name="shuffle_play">Shuffle</string>
+    <string name="play_all">Play all</string>
+    <string name="now_playing">Now playing</string>
+    <string name="queue">Queue</string>
+    <string name="queue_from">Source: %1$s</string>
+    <string name="play_next">Play next</string>
+    <string name="add_to_queue">Add to queue</string>
+    <string name="play_now">Play now</string>
+    <string name="view_artist">Go to artist</string>
+    <string name="view_album">Go to album</string>
+    <string name="close">Close</string>
+    <string name="song_actions">Song actions</string>
+    <string name="back">Back</string>
+    <string name="songs_tab">Songs</string>
+    <string name="albums_tab">Albums</string>
+    <string name="settings_relogin">Set up again with phone</string>
+    <string name="settings_quality">Quality</string>
+    <string name="quality_original">Original</string>
+    <string name="quality_compat">Compatible</string>
+    <string name="settings_clear_cache">Clear cover cache</string>
+    <string name="settings_about">About</string>
+    <string name="settings_logout">Log out</string>
+    <string name="connected">Connected</string>
+    <string name="server">Music server</string>
+    <string name="user_prefix">User: %1$s</string>
+    <string name="login_title">Set up with your phone</string>
+    <string name="login_step1">Connect your phone to your home Wi-Fi</string>
+    <string name="login_step2">Scan the QR code on the right</string>
+    <string name="login_step3">Enter your server details on the phone</string>
+    <string name="login_note_tv">No typing on the TV — ever.</string>
+    <string name="login_note_lan">A wired TV works too.</string>
+    <string name="qr_renew">New code</string>
+    <string name="qr_help">Help</string>
+    <string name="qr_expires_in">QR code refreshes in %1$s</string>
+    <string name="connecting_title">Connecting to your music server</string>
+    <string name="connecting_subtitle">Got the details from your phone — one moment.</string>
+    <string name="connecting_step1">Phone connected</string>
+    <string name="connecting_step2">Verifying</string>
+    <string name="connecting_step3">Opening your songs</string>
+    <string name="connecting_cancel">Cancel</string>
+    <string name="error_server_title">Can’t reach the music server</string>
+    <string name="error_server_body">Check the server and your network, then try again.</string>
+    <string name="retry_connect">Retry</string>
+    <string name="empty_favorites_title">No favorite songs yet</string>
+    <string name="empty_favorites_body">Songs you favorite will show up here.</string>
+    <string name="browse_all_songs">Browse all songs</string>
+    <string name="open_queue">Queue</string>
+    <string name="back_to_list">Back to list</string>
+    <string name="next_up">Up next</string>
+    <string name="album_tracks_fmt">%1$d songs · %2$d min</string>
+    <string name="hint_remote">Up/down to browse · OK to play · right for more</string>
+
+    <!-- Player / transport -->
+    <string name="playback_mode">Play mode</string>
+    <string name="playback_ordered">In order</string>
+    <string name="playback_repeat_one">Repeat one</string>
+    <string name="playback_repeat_all">Repeat all</string>
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="play_inline">play</string>
+    <string name="play_or_pause">play or pause</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="playback_control">Playback control</string>
+    <string name="song_row_desc">%1$s, %2$s. OK to %3$s, right for song actions.</string>
+    <string name="playing_indicator_desc">Now playing</string>
+    <string name="queue_count_title">Queue · %1$d</string>
+    <string name="remove_from_queue">Remove %1$s from the queue</string>
+    <string name="queue_manual">Added manually</string>
+    <string name="close_song_actions">Close song actions</string>
+
+    <!-- Login / pairing -->
+    <string name="qr_content_desc">Setup QR code</string>
+    <string name="cancel_setup">Cancel setup</string>
+    <string name="got_it">Got it</string>
+    <string name="login_help_body">1. The phone and TV must be on the same network (a wired TV is fine).\n2. Scan the QR code with your phone camera or browser to open setup.\n3. If scanning fails, enter the address shown on the TV in your phone browser.\n4. If your phone is on mobile data or guest Wi-Fi it may not reach the TV — switch to your home Wi-Fi.</string>
+
+    <!-- Settings -->
+    <string name="server_connected">Music server · Connected</string>
+    <string name="settings_quality_header">Audio quality</string>
+    <string name="storage">Storage</string>
+    <string name="cache_cleared">Cover cache cleared</string>
+    <string name="about_with_version">About · Navidrome TV %1$s</string>
+    <string name="logout_confirm_title">Log out?</string>
+    <string name="logout_confirm_body">Playback will stop and sign-in info on this TV will be cleared. To change the connection, use “Set up again with phone”.</string>
+    <string name="logout_confirm">Log out</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Empty states -->
+    <string name="empty_playlists_title">No playlists on this server</string>
+    <string name="empty_playlists_body">Start from songs, artists or albums instead.</string>
+    <string name="empty_fav_albums_title">No favorite albums</string>
+    <string name="empty_fav_albums_body">Favorite albums will show up here.</string>
+    <string name="browse_albums">Browse albums</string>
+    <string name="favorited_desc">Favorited</string>
+    <string name="empty_all_songs">No songs in your library</string>
+    <string name="empty_now_playing_title">Nothing playing</string>
+    <string name="empty_now_playing_body">Pick a song, artist or album to start.</string>
+    <string name="empty_queue_title">The queue is empty</string>
+    <string name="empty_queue_body">Press right on a song to add it to the queue.</string>
+
+    <!-- Counts -->
+    <string name="albums_loaded">%1$d loaded</string>
+    <string name="songs_loaded">%1$d loaded</string>
+
+    <!-- Resume prompt -->
+    <string name="resume_title">Resume playback?</string>
+    <string name="resume_body">You were listening to “%1$s”. Continue from where you left off.</string>
+    <string name="last_source">last queue</string>
+    <string name="later">Not now</string>
+
+    <!-- Errors (non-UI layers resolve these via L10n) -->
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_album">Unknown album</string>
+    <string name="err_not_configured">Server connection not set up yet</string>
+    <string name="err_invalid_server_url">Invalid server address: %1$s</string>
+    <string name="err_cannot_reach_server">Can’t reach the server</string>
+    <string name="err_decode_failed">Response could not be decoded: %1$s</string>
+    <string name="err_unknown_server_error">Unknown server error</string>
+    <string name="err_album_not_found">Album not found: %1$s</string>
+    <string name="err_access_denied_401">Server denied access (401)</string>
+    <string name="err_server_response_code">Server responded with %1$d</string>
+    <string name="err_empty_response">Empty response</string>
+    <string name="err_pairing_service">Can’t start the setup service on this TV</string>
+    <string name="err_load_failed">Load failed</string>
+    <string name="err_load_songs">Couldn’t load songs</string>
+    <string name="load_songs_failed">Couldn’t load songs</string>
+    <string name="retry">Retry</string>
+
+    <plurals name="songs_count">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
+    </plurals>
+    <plurals name="albums_count">
+        <item quantity="one">%1$d album</item>
+        <item quantity="other">%1$d albums</item>
+    </plurals>
+    <plurals name="artists_count">
+        <item quantity="one">%1$d artist</item>
+        <item quantity="other">%1$d artists</item>
+    </plurals>
+    <plurals name="playlists_count">
+        <item quantity="one">%1$d playlist</item>
+        <item quantity="other">%1$d playlists</item>
+    </plurals>
 </resources>

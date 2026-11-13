@@ -26,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.navidrome.tv.R
 import com.navidrome.tv.TvApp
 import com.navidrome.tv.ui.collectAsStateValue
 import com.navidrome.tv.model.QueueSource
@@ -66,7 +68,7 @@ fun AllSongsScreen(vm: AppViewModel) {
         loading = true; error = null; exhausted = false
         val result = app.repository.songsPage(0, 100)
         result.onSuccess { songs = it; loading = false }
-            .onFailure { error = it.message ?: "載入失敗"; loading = false }
+            .onFailure { error = it.message ?: context.getString(R.string.err_load_failed); loading = false }
     }
 
     LaunchedEffect(Unit) { if (songs.isEmpty()) loadFirst() }
@@ -93,25 +95,25 @@ fun AllSongsScreen(vm: AppViewModel) {
 
     Column(Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp, top = 28.dp)) {
         ScreenHeader(
-            title = "所有歌曲",
-            subtitle = if (songs.isNotEmpty()) "已载入 ${songs.size} 首" else null,
+            title = stringResource(R.string.nav_songs),
+            subtitle = if (songs.isNotEmpty()) stringResource(R.string.songs_loaded, songs.size) else null,
             trailing = {
-                PillButton("随机播放", Icons.Filled.Shuffle, filled = true) { vm.shuffleAll(context) }
+                PillButton(stringResource(R.string.shuffle_play), Icons.Filled.Shuffle, filled = true) { vm.shuffleAll(context) }
             },
         )
         when {
             loading -> LoadingState(Modifier.weight(1f))
             error != null -> ErrorState(
-                title = "暂时连不上音乐服务器",
+                title = stringResource(R.string.error_server_title),
                 body = error ?: "",
-                retryText = "重新连接",
+                retryText = stringResource(R.string.retry_connect),
                 onRetry = { scope.launch { loadFirst() } },
-                reSetupText = "用手机重新设定",
+                reSetupText = stringResource(R.string.settings_relogin),
                 onReSetup = { vm.beginReconfigure() },
                 modifier = Modifier.weight(1f),
             )
             songs.isEmpty() -> Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                androidx.compose.material3.Text("曲庫没有歌曲", color = TextSecondary)
+                androidx.compose.material3.Text(stringResource(R.string.empty_all_songs), color = TextSecondary)
             }
             else -> {
                 LazyColumn(state = listState, modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {

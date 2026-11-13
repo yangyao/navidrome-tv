@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.navidrome.tv.R
 import com.navidrome.tv.ui.theme.TextPrimary
 import com.navidrome.tv.ui.theme.TextSecondary
 
@@ -50,7 +52,7 @@ fun PageHeader(title: String, onBack: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         FocusBox(onBack, modifier = Modifier.size(40.dp), scaleOnFocus = false) {
             androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
-                "返回", tint = TextPrimary, modifier = Modifier.align(Alignment.Center).size(24.dp))
+                stringResource(R.string.back), tint = TextPrimary, modifier = Modifier.align(Alignment.Center).size(24.dp))
         }
         Text(title, color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Medium)
     }

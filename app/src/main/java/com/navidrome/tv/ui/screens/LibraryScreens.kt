@@ -17,11 +17,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.navidrome.tv.TvApp
+import com.navidrome.tv.R
 import com.navidrome.tv.model.*
 import com.navidrome.tv.playback.PlaybackAccess
 import com.navidrome.tv.ui.AppViewModel
@@ -45,7 +48,7 @@ fun ArtistsScreen(vm: AppViewModel) {
     }
     ContentFocus(requester, !loading && artists.isNotEmpty())
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-        ScreenHeader("歌手", "${artists.size} 位歌手")
+        ScreenHeader(stringResource(R.string.nav_artists), pluralStringResource(R.plurals.artists_count, artists.size, artists.size))
         if (loading) LoadingState(Modifier.weight(1f)) else LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp), state = grid, modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -57,7 +60,7 @@ fun ArtistsScreen(vm: AppViewModel) {
                     Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         CoverImage(artist.coverArt, 160.dp, circle = true, adaptive = true)
                         PrimaryText(artist.name, Modifier.padding(top = 8.dp), 18)
-                        SecondaryText("${artist.albumCount} 张专辑", fontSize = 14)
+                        SecondaryText(pluralStringResource(R.plurals.albums_count, artist.albumCount, artist.albumCount), fontSize = 14)
                     }
                 }
             }
@@ -95,7 +98,7 @@ fun AlbumsScreen(vm: AppViewModel) {
         }
     }
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-        ScreenHeader("专辑", "已载入 ${albums.size} 张")
+        ScreenHeader(stringResource(R.string.nav_albums), stringResource(R.string.albums_loaded, albums.size))
         if (loading) LoadingState(Modifier.weight(1f)) else LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp), state = grid, modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -151,26 +154,27 @@ fun ArtistDetailScreen(vm: AppViewModel, artistId: String, name: String) {
         if (loaded && tab == 0 && !songsLoaded) {
             songError = null
             app.repository.songsForAlbums(albums).onSuccess { songs = it; songsLoaded = true }
-                .onFailure { songError = it.message ?: "无法载入歌曲" }
+                .onFailure { songError = it.message ?: context.getString(R.string.err_load_songs) }
         }
     }
     ContentFocus(requester, loaded && if (tab == 0) songsLoaded && songs.isNotEmpty() else albums.isNotEmpty())
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-        PageHeader("歌手") { vm.back() }
+        PageHeader(stringResource(R.string.nav_artists)) { vm.back() }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             CoverImage(albums.firstOrNull()?.coverArt, 64.dp, circle = true)
             Column(Modifier.weight(1f)) {
                 PrimaryText(name, fontSize = 28)
-                SecondaryText("${albums.size} 张专辑 · ${songs.size} 首歌曲", fontSize = 15)
+                SecondaryText(pluralStringResource(R.plurals.albums_count, albums.size, albums.size) + " · " +
+                    pluralStringResource(R.plurals.songs_count, songs.size, songs.size), fontSize = 15)
             }
         }
-        TabRow(listOf("歌曲", "专辑"), tab) { tab = it }
+        TabRow(listOf(stringResource(R.string.songs_tab), stringResource(R.string.albums_tab)), tab) { tab = it }
         if (!loaded) LoadingState(Modifier.weight(1f)) else if (tab == 0 && songError != null) {
-            EmptyState(Icons.Filled.CloudOff, "歌曲载入失败", songError!!, "重试", { retry++ }, Modifier.weight(1f))
+            EmptyState(Icons.Filled.CloudOff, stringResource(R.string.load_songs_failed), songError!!, stringResource(R.string.retry), { retry++ }, Modifier.weight(1f))
         } else if (tab == 0 && !songsLoaded) LoadingState(Modifier.weight(1f)) else if (tab == 0) {
             if (songs.isNotEmpty()) Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(bottom = 10.dp)) {
-                PillButton("播放全部", Icons.Filled.PlayArrow, true) { PlaybackAccess.playFrom(context, songs, 0, source) }
-                PillButton("随机播放", Icons.Filled.Shuffle, false) { PlaybackAccess.playFrom(context, songs.shuffled(), 0, source) }
+                PillButton(stringResource(R.string.play_all), Icons.Filled.PlayArrow, true) { PlaybackAccess.playFrom(context, songs, 0, source) }
+                PillButton(stringResource(R.string.shuffle_play), Icons.Filled.Shuffle, false) { PlaybackAccess.playFrom(context, songs.shuffled(), 0, source) }
             }
             LazyColumn(state = list, modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 itemsIndexed(songs, key = { _, s -> s.id }) { index, song ->
@@ -212,7 +216,7 @@ fun AlbumDetailScreen(vm: AppViewModel, albumId: String) {
     ContentFocus(requester, loaded && songs.isNotEmpty())
     if (!loaded) { LoadingState(Modifier.fillMaxSize()); return }
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-        PageHeader("专辑") { vm.back() }
+        PageHeader(stringResource(R.string.nav_albums)) { vm.back() }
         Spacer(Modifier.height(12.dp))
         BoxWithConstraints(Modifier.weight(1f)) {
             val coverSize = minOf(maxHeight * .42f, 190.dp)
@@ -222,20 +226,22 @@ fun AlbumDetailScreen(vm: AppViewModel, albumId: String) {
                     CoverImage(album?.coverArt, coverSize)
                     Text(album?.name ?: "", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     SecondaryText(album?.artist ?: "", fontSize = 16)
-                    SecondaryText("${album?.year?.let { "$it · " } ?: ""}${songs.size} 首歌曲", fontSize = 14)
+                    SecondaryText((album?.year?.let { "$it · " } ?: "") +
+                        pluralStringResource(R.plurals.songs_count, songs.size, songs.size), fontSize = 14)
                     if (songs.isNotEmpty()) {
-                        PillButton("播放全部", Icons.Filled.PlayArrow, true) {
-                            PlaybackAccess.playFrom(context, songs, 0, QueueSource.AlbumSongs(albumId, album?.name ?: "专辑"))
+                        val albumFallback = stringResource(R.string.nav_albums)
+                        PillButton(stringResource(R.string.play_all), Icons.Filled.PlayArrow, true) {
+                            PlaybackAccess.playFrom(context, songs, 0, QueueSource.AlbumSongs(albumId, album?.name ?: albumFallback))
                         }
-                        PillButton("随机播放", Icons.Filled.Shuffle, false) {
-                            PlaybackAccess.playFrom(context, songs.shuffled(), 0, QueueSource.AlbumSongs(albumId, album?.name ?: "专辑"))
+                        PillButton(stringResource(R.string.shuffle_play), Icons.Filled.Shuffle, false) {
+                            PlaybackAccess.playFrom(context, songs.shuffled(), 0, QueueSource.AlbumSongs(albumId, album?.name ?: albumFallback))
                         }
                     }
                 }
                 LazyColumn(state = list, modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     itemsIndexed(songs, key = { _, s -> s.id }) { index, song ->
                         SongRow(song, index, playback.currentSong?.id == song.id, false, false,
-                            { PlaybackAccess.playFrom(context, songs, index, QueueSource.AlbumSongs(albumId, album?.name ?: "专辑")) },
+                            { PlaybackAccess.playFrom(context, songs, index, QueueSource.AlbumSongs(albumId, album?.name ?: context.getString(R.string.nav_albums))) },
                             { vm.openSongActions(song, songs, index) },
                             modifier = if (index == focusedIndex) Modifier.focusRequester(requester) else Modifier,
                             onFocused = { focusedIndex = index })

@@ -50,7 +50,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import com.navidrome.tv.R
 import com.navidrome.tv.TvApp
 import com.navidrome.tv.ui.theme.Accent
 import com.navidrome.tv.ui.theme.AccentOnDark
@@ -110,7 +112,7 @@ fun CoverImage(coverArt: String?, size: Dp, modifier: Modifier = Modifier, circl
 fun PlayingIndicator(modifier: Modifier = Modifier) {
     Icon(
         Icons.Filled.GraphicEq,
-        contentDescription = "正在播放",
+        contentDescription = stringResource(R.string.playing_indicator_desc),
         tint = Accent,
         modifier = modifier.size(22.dp),
     )

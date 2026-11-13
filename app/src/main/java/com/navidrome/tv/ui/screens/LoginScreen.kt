@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.navidrome.tv.R
 import com.navidrome.tv.pairing.PairingSession
 import com.navidrome.tv.pairing.QrGenerator
 import com.navidrome.tv.ui.AppViewModel
@@ -73,23 +75,23 @@ private fun QrContent(vm: AppViewModel) {
                 Icon(Icons.Filled.MusicNote, contentDescription = null, tint = Accent, modifier = Modifier.size(40.dp))
                 Column {
                     Text("Navidrome TV", color = TextPrimary, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                    Text("音乐，从这里开始。", color = TextSecondary, fontSize = 18.sp)
+                    Text(stringResource(R.string.brand_subtitle), color = TextSecondary, fontSize = 18.sp)
                 }
             }
             Spacer(Modifier.height(20.dp))
-            Text("用手机扫码设定", color = TextPrimary, fontSize = 34.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.login_title), color = TextPrimary, fontSize = 34.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(16.dp))
 
-            StepRow(1, Icons.Filled.Wifi, "手机连上家中 Wi-Fi")
+            StepRow(1, Icons.Filled.Wifi, stringResource(R.string.login_step1))
             Spacer(Modifier.height(8.dp))
-            StepRow(2, Icons.Filled.SettingsInputAntenna, "扫描右侧二维码")
+            StepRow(2, Icons.Filled.SettingsInputAntenna, stringResource(R.string.login_step2))
             Spacer(Modifier.height(8.dp))
-            StepRow(3, Icons.Filled.MusicNote, "在手机填写音乐服务器信息")
+            StepRow(3, Icons.Filled.MusicNote, stringResource(R.string.login_step3))
 
             Spacer(Modifier.height(16.dp))
-            Text("电视不需要输入任何文字。", color = TextPrimary, fontSize = 20.sp)
+            Text(stringResource(R.string.login_note_tv), color = TextPrimary, fontSize = 20.sp)
             Spacer(Modifier.height(10.dp))
-            Text("电视有线连接也可以。", color = TextSecondary, fontSize = 18.sp)
+            Text(stringResource(R.string.login_note_lan), color = TextSecondary, fontSize = 18.sp)
 
             ui.loginError?.let {
                 Spacer(Modifier.height(8.dp))
@@ -98,12 +100,12 @@ private fun QrContent(vm: AppViewModel) {
 
             Spacer(Modifier.weight(1f))
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                PillButton("重新生成", Icons.Filled.Refresh, filled = false, modifier = Modifier.focusRequester(first)) { vm.showQr() }
-                PillButton("连接说明", Icons.Filled.Info, filled = false) { showHelp = true }
+                PillButton(stringResource(R.string.qr_renew), Icons.Filled.Refresh, filled = false, modifier = Modifier.focusRequester(first)) { vm.showQr() }
+                PillButton(stringResource(R.string.qr_help), Icons.Filled.Info, filled = false) { showHelp = true }
             }
             if (ui.isReconfiguring) {
                 Spacer(Modifier.height(8.dp))
-                PillButton("取消，返回设定", null, filled = false) { vm.cancelReconfigure() }
+                PillButton(stringResource(R.string.cancel_setup), null, filled = false) { vm.cancelReconfigure() }
             }
         }
 
@@ -116,12 +118,12 @@ private fun QrContent(vm: AppViewModel) {
                         .background(Color.White, RoundedCornerShape(20.dp))
                         .padding(16.dp),
                 ) {
-                    Image(bitmap.asImageBitmap(), contentDescription = "设定二维码", modifier = Modifier.size(260.dp))
+                    Image(bitmap.asImageBitmap(), contentDescription = stringResource(R.string.qr_content_desc), modifier = Modifier.size(260.dp))
                 }
                 Spacer(Modifier.height(16.dp))
                 val mm = ui.qrCountdownSec / 60
                 val ss = ui.qrCountdownSec % 60
-                Text("配对码將于 %d:%02d 后更新".format(mm, ss), color = TextSecondary, fontSize = 18.sp)
+                Text(stringResource(R.string.qr_expires_in, "%d:%02d".format(mm, ss)), color = TextSecondary, fontSize = 18.sp)
                 Spacer(Modifier.height(8.dp))
                 Text(ui.qrUrlText ?: "", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             } else {
@@ -134,15 +136,12 @@ private fun QrContent(vm: AppViewModel) {
         AlertDialog(
             onDismissRequest = { showHelp = false },
             confirmButton = {
-                androidx.compose.material3.TextButton(onClick = { showHelp = false }) { Text("知道了", color = Accent) }
+                androidx.compose.material3.TextButton(onClick = { showHelp = false }) { Text(stringResource(R.string.got_it), color = Accent) }
             },
-            title = { Text("连接说明", color = TextPrimary) },
+            title = { Text(stringResource(R.string.qr_help), color = TextPrimary) },
             text = {
                 Text(
-                    "1. 手机与电视需连上同一个区域网络（电视可走有线）。\n" +
-                        "2. 用手机相机或浏览器扫描二维码，开启设定頁。\n" +
-                        "3. 若扫码不通，可在手机浏览器直接输入画面上的地址。\n" +
-                        "4. 手机用行動网络或訪客 Wi-Fi 时，可能無法连到电视，请改用家中 Wi-Fi。",
+                    stringResource(R.string.login_help_body),
                     color = TextSecondary,
                     fontSize = 17.sp,
                 )
@@ -185,19 +184,19 @@ private fun ConnectingContent(vm: AppViewModel) {
     ) {
         CircularProgressIndicator(color = Accent, strokeWidth = 8.dp, modifier = Modifier.size(120.dp))
         Spacer(Modifier.height(32.dp))
-        Text("正在连接音乐服务器", color = TextPrimary, fontSize = 40.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.connecting_title), color = TextPrimary, fontSize = 40.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(10.dp))
-        Text("已收到手机设定，请稍候。", color = TextSecondary, fontSize = 20.sp)
+        Text(stringResource(R.string.connecting_subtitle), color = TextSecondary, fontSize = 20.sp)
         Spacer(Modifier.height(44.dp))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            StepDot(0, "手机已连接", step)
+            StepDot(0, stringResource(R.string.connecting_step1), step)
             StepLine(true)
-            StepDot(1, "正在验证", step)
+            StepDot(1, stringResource(R.string.connecting_step2), step)
             StepLine(step >= 3)
-            StepDot(2, "开启歌曲清单", step)
+            StepDot(2, stringResource(R.string.connecting_step3), step)
         }
         Spacer(Modifier.height(48.dp))
-        PillButton("取消连接", null, filled = false) { vm.cancelConnecting() }
+        PillButton(stringResource(R.string.connecting_cancel), null, filled = false) { vm.cancelConnecting() }
     }
 }
 

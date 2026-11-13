@@ -1,20 +1,20 @@
 package com.navidrome.tv.pairing
 
-/** 內建手機設定頁（依 design/v1/14-mobile-setup）。無外部資源、無 CDN。 */
+/** 內建手機設定頁（依 design/v1/14-mobile-setup）。無外部資源、無 CDN；雙語（依手機語言切換）。 */
 object SetupPage {
     val html: String = """
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Navidrome TV · 连接你的电视</title>
+<title>Navidrome TV · Connect to your TV</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #0e1216; color: #f2f6f4; min-height: 100vh;
-    font-family: -apple-system, "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+    font-family: -apple-system, "PingFang TC", "Noto Sans TC", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
     display: flex; flex-direction: column; align-items: center; padding: 40px 20px 60px;
   }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; margin-bottom: 28px; }
@@ -58,28 +58,91 @@ object SetupPage {
 </head>
 <body>
   <div class="brand"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v10.5a3 3 0 1 1-2-2.83V7.4L11 8.8v9.7a3 3 0 1 1-2-2.83z"/></svg>Navidrome TV</div>
-  <h1>连接你的电视</h1>
-  <div class="badge"><span class="dot"></span>客廳电视 · 已配对</div>
+  <h1 id="t_h1">Connect to your TV</h1>
+  <div class="badge"><span class="dot"></span><span id="t_badge">Living room TV · Paired</span></div>
   <form id="f" onsubmit="return submitForm(event)">
     <div id="sugwrap" style="display:none; margin-bottom: 6px;">
-      <div style="font-size:14px; color:#a8e8c8; font-weight:700; margin:12px 0 8px;">发现的音乐服务器（点选即可填入）</div>
+      <div id="t_sug" style="font-size:14px; color:#a8e8c8; font-weight:700; margin:12px 0 8px;">Discovered servers (tap to fill in)</div>
       <div id="sug" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
-    <label for="url">音乐服务器地址</label>
+    <label id="t_url" for="url">Server address</label>
     <input id="url" type="url" inputmode="url" autocomplete="url" placeholder="https://music.example.com" required>
-    <label for="user">用户名称</label>
+    <label id="t_user" for="user">Username</label>
     <input id="user" type="text" autocomplete="username" placeholder="listener" required>
-    <label for="pass">密码</label>
+    <label id="t_pass" for="pass">Password</label>
     <div class="field">
       <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••" required>
-      <button type="button" class="eye" onclick="toggle()">显示</button>
+      <button type="button" class="eye" id="t_eye" onclick="toggle()">Show</button>
     </div>
-    <button class="submit" id="btn" type="submit">连接电视</button>
+    <button class="submit" id="btn" type="submit">Connect</button>
     <div class="msg" id="msg"></div>
-    <div class="footer">设定完成后，电视会自動开启歌曲清单。</div>
+    <div class="footer" id="t_footer">Once you're done, the TV opens your song list.</div>
   </form>
-  <div class="once"><span class="mark">✔</span>只需设定一次。</div>
+  <div class="once"><span class="mark">✔</span><span id="t_once">Only once.</span></div>
 <script>
+var I18N = {
+  en: {
+    title: 'Navidrome TV · Connect to your TV',
+    h1: 'Connect to your TV',
+    badge: 'Living room TV · Paired',
+    sug: 'Discovered servers (tap to fill in)',
+    url: 'Server address',
+    user: 'Username',
+    pass: 'Password',
+    eye: 'Show',
+    submit: 'Connect',
+    connecting: 'Connecting…',
+    footer: "Once you're done, the TV opens your song list.",
+    once: 'Only once.',
+    ok: 'TV connected — you can close this page.',
+    fail: 'Setup failed — check the details and try again.',
+    netErr: "Can't reach the TV — make sure the phone and TV are on the same network.",
+    reachability: "The TV can't reach this address — check the server address and network.",
+    credentials: 'Wrong username or password.',
+    tls: "There's a problem with the server certificate or TLS.",
+    invalid: 'Pairing expired — generate a new QR code on the TV.'
+  },
+  zh: {
+    title: 'Navidrome TV · 连接你的电视',
+    h1: '连接你的电视',
+    badge: '客厅电视 · 已配对',
+    sug: '发现的音乐服务器（点选即可填入）',
+    url: '音乐服务器地址',
+    user: '用户名称',
+    pass: '密码',
+    eye: '显示',
+    submit: '连接电视',
+    connecting: '正在连接…',
+    footer: '设定完成后，电视会自动开启歌曲清单。',
+    once: '只需设定一次。',
+    ok: '电视已连接，可以关闭此页。',
+    fail: '设定失败，请检查后重试。',
+    netErr: '无法连上电视，请确认手机与电视在同一个网络。',
+    reachability: '电视连不上这个地址，请确认服务器地址与网络。',
+    credentials: '账号或密码不正确。',
+    tls: '服务器凭证或 TLS 有问题。',
+    invalid: '配对已过期，请在电视上重新生成二维码。'
+  }
+};
+var LANG = /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
+var T = I18N[LANG];
+document.documentElement.lang = LANG === 'zh' ? 'zh-Hans' : 'en';
+document.title = T.title;
+function applyText(id, text) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+applyText('t_h1', T.h1);
+applyText('t_badge', T.badge);
+applyText('t_sug', T.sug);
+applyText('t_url', T.url);
+applyText('t_user', T.user);
+applyText('t_pass', T.pass);
+applyText('t_eye', T.eye);
+applyText('t_footer', T.footer);
+applyText('t_once', T.once);
+var btn = document.getElementById('btn');
+btn.textContent = T.submit;
 var busy = false;
 function toggle() {
   var p = document.getElementById('pass');
@@ -90,11 +153,11 @@ function setMsg(text, cls) {
   m.textContent = text; m.className = 'msg ' + (cls || '');
 }
 var ERR = {
-  reachability: '电视连不上这个地址，请确认服务器地址与网络。',
-  credentials: '账号或密码不正确。',
-  tls: '服务器凭证或 TLS 有問題。',
-  invalid: '配对已过期，请在电视上重新生成二维码。',
-  expired: '配对已过期，请在电视上重新生成二维码。'
+  reachability: T.reachability,
+  credentials: T.credentials,
+  tls: T.tls,
+  invalid: T.invalid,
+  expired: T.invalid
 };
 async function discover() {
   var token = location.hash.length > 1 ? location.hash.slice(1) : '';
@@ -124,8 +187,7 @@ function submitForm(e) {
 async function go() {
   if (busy) return false;
   busy = true;
-  var btn = document.getElementById('btn');
-  btn.disabled = true; btn.textContent = '正在连接…';
+  btn.disabled = true; btn.textContent = T.connecting;
   setMsg('');
   var token = location.hash.length > 1 ? location.hash.slice(1) : '';
   var body = JSON.stringify({
@@ -142,18 +204,18 @@ async function go() {
     var data = null;
     try { data = await res.json(); } catch (e) {}
     if (res.ok && data && data.ok) {
-      setMsg('电视已连接，可以关闭此頁。', 'ok');
+      setMsg(T.ok, 'ok');
     } else if (res.status === 401 || res.status === 410) {
       setMsg(ERR.invalid, 'err');
     } else if (data && data.error && ERR[data.error]) {
       setMsg(ERR[data.error], 'err');
     } else {
-      setMsg('设定失敗，请检查后重试。', 'err');
+      setMsg(T.fail, 'err');
     }
   } catch (e) {
-    setMsg('無法连上电视，请确认手机与电视在同一个网络。', 'err');
+    setMsg(T.netErr, 'err');
   }
-  btn.disabled = false; btn.textContent = '连接电视'; busy = false;
+  btn.disabled = false; btn.textContent = T.submit; busy = false;
   return false;
 }
 </script>

@@ -5,6 +5,7 @@ import com.navidrome.tv.data.local.ConnectionSettings
 import com.navidrome.tv.data.api.SubsonicClient
 import com.navidrome.tv.data.local.SettingsStore
 import com.navidrome.tv.data.repository.MusicRepository
+import com.navidrome.tv.util.L10n
 
 class TvApp : Application(), coil.ImageLoaderFactory {
     override fun newImageLoader(): coil.ImageLoader = coil.ImageLoader.Builder(this)
@@ -23,6 +24,7 @@ class TvApp : Application(), coil.ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
+        L10n.init(this)
         settings = SettingsStore(this)
         client = SubsonicClient { settings.connection() }
         repository = MusicRepository(client)

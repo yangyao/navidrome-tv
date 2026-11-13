@@ -14,10 +14,12 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.navidrome.tv.R
 import com.navidrome.tv.model.Song
 import com.navidrome.tv.playback.PlaybackAccess
 import com.navidrome.tv.ui.theme.*
@@ -29,6 +31,8 @@ fun SongRow(song: Song, index: Int?, isCurrent: Boolean, showArtist: Boolean, sh
     onFocused: (() -> Unit)? = null, trailing: @Composable (() -> Unit)? = null) {
     var focused by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val rowDesc = stringResource(R.string.song_row_desc, song.title, song.artist,
+        stringResource(if (isCurrent) R.string.play_or_pause else R.string.play_inline))
     val shape = RoundedCornerShape(10.dp)
     Row(modifier.fillMaxWidth().height(64.dp).clip(shape)
         .background(if (focused) BgRowFocused else if (isCurrent) BgRow else Color.Transparent)
@@ -42,7 +46,7 @@ fun SongRow(song: Song, index: Int?, isCurrent: Boolean, showArtist: Boolean, sh
                 else -> false
             }
         }
-        .semantics { contentDescription = "${song.title}，${song.artist}。确认${if (isCurrent) "播放或暂停" else "播放"}，向右更多操作" }
+        .semantics { contentDescription = rowDesc }
         .clickable { if (isCurrent) PlaybackAccess.togglePause(context) else onClick() }
         .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {

@@ -1,0 +1,151 @@
+<resources>
+    <string name="app_name">Navidrome TV</string>
+    <string name="brand_subtitle">音乐，从这里开始。</string>
+    <string name="nav_songs">所有歌曲</string>
+    <string name="nav_artists">歌手</string>
+    <string name="nav_albums">专辑</string>
+    <string name="nav_playlists">歌单</string>
+    <string name="nav_favorites">收藏</string>
+    <string name="nav_settings">设定</string>
+    <string name="shuffle_play">随机播放</string>
+    <string name="play_all">播放全部</string>
+    <string name="now_playing">正在播放</string>
+    <string name="queue">播放队列</string>
+    <string name="queue_from">来源：%1$s</string>
+    <string name="play_next">下一首播放</string>
+    <string name="add_to_queue">加入队列</string>
+    <string name="play_now">立即播放</string>
+    <string name="view_artist">查看歌手</string>
+    <string name="view_album">查看专辑</string>
+    <string name="close">关闭</string>
+    <string name="song_actions">歌曲操作</string>
+    <string name="back">返回</string>
+    <string name="songs_tab">歌曲</string>
+    <string name="albums_tab">专辑</string>
+    <string name="settings_relogin">用手机重新设定</string>
+    <string name="settings_quality">音质</string>
+    <string name="quality_original">原音</string>
+    <string name="quality_compat">兼容模式</string>
+    <string name="settings_clear_cache">清除封面缓存</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_logout">登出</string>
+    <string name="connected">已连接</string>
+    <string name="server">音乐服务器</string>
+    <string name="user_prefix">用户：%1$s</string>
+    <string name="login_title">用手机扫码设定</string>
+    <string name="login_step1">手机连上家中 Wi-Fi</string>
+    <string name="login_step2">扫描右侧二维码</string>
+    <string name="login_step3">在手机填写音乐服务器信息</string>
+    <string name="login_note_tv">电视不需要输入任何文字。</string>
+    <string name="login_note_lan">电视有线连接也可以。</string>
+    <string name="qr_renew">重新生成</string>
+    <string name="qr_help">连接说明</string>
+    <string name="qr_expires_in">配对码将于 %1$s 后更新</string>
+    <string name="connecting_title">正在连接音乐服务器</string>
+    <string name="connecting_subtitle">已收到手机设定，请稍候。</string>
+    <string name="connecting_step1">手机已连接</string>
+    <string name="connecting_step2">正在验证</string>
+    <string name="connecting_step3">开启歌曲清单</string>
+    <string name="connecting_cancel">取消连接</string>
+    <string name="error_server_title">暂时连不上音乐服务器</string>
+    <string name="error_server_body">请确认服务器与网络连接，再试一次。</string>
+    <string name="retry_connect">重新连接</string>
+    <string name="empty_favorites_title">还没有收藏的歌曲</string>
+    <string name="empty_favorites_body">收藏的歌曲会显示在这里。</string>
+    <string name="browse_all_songs">浏览所有歌曲</string>
+    <string name="open_queue">播放队列</string>
+    <string name="back_to_list">返回清单</string>
+    <string name="next_up">接下来播放</string>
+    <string name="hint_remote">上下選歌 · 确认播放 · 向右更多</string>
+
+    <!-- Player / transport -->
+    <string name="playback_mode">播放模式</string>
+    <string name="playback_ordered">顺序播放</string>
+    <string name="playback_repeat_one">单曲循环</string>
+    <string name="playback_repeat_all">列表循环</string>
+    <string name="action_play">播放</string>
+    <string name="action_pause">暂停</string>
+    <string name="action_resume">继续播放</string>
+    <string name="play_inline">播放</string>
+    <string name="play_or_pause">播放或暂停</string>
+    <string name="previous">上一首</string>
+    <string name="next">下一首</string>
+    <string name="playback_control">播放控制</string>
+    <string name="song_row_desc">%1$s，%2$s。确认%3$s，向右更多操作</string>
+    <string name="playing_indicator_desc">正在播放</string>
+    <string name="queue_count_title">播放队列 · %1$d 首</string>
+    <string name="remove_from_queue">从队列移除 %1$s</string>
+    <string name="queue_manual">手動加入</string>
+    <string name="close_song_actions">关闭歌曲操作</string>
+
+    <!-- Login / pairing -->
+    <string name="qr_content_desc">设定二维码</string>
+    <string name="cancel_setup">取消，返回设定</string>
+    <string name="got_it">知道了</string>
+    <string name="login_help_body">1. 手机与电视需连上同一个局域网（电视可走有线）。\n2. 用手机相机或浏览器扫描二维码，打开设置页。\n3. 若扫码不通，可在手机浏览器直接输入画面上的地址。\n4. 手机用移动网络或访客 Wi-Fi 时，可能无法连到电视，请改用家中 Wi-Fi。</string>
+
+    <!-- Settings -->
+    <string name="server_connected">音乐服务器 · 已连接</string>
+    <string name="settings_quality_header">播放音质</string>
+    <string name="storage">储存</string>
+    <string name="cache_cleared">封面缓存已清除</string>
+    <string name="about_with_version">关于 · Navidrome TV %1$s</string>
+    <string name="logout_confirm_title">确定登出？</string>
+    <string name="logout_confirm_body">将停止播放并清除本机登录信息。修改连接可使用「用手机重新设定」。</string>
+    <string name="logout_confirm">确定登出</string>
+    <string name="cancel">取消</string>
+
+    <!-- Empty states -->
+    <string name="empty_playlists_title">服务器上没有歌单</string>
+    <string name="empty_playlists_body">可以先从所有歌曲、歌手或专辑开始播放。</string>
+    <string name="empty_fav_albums_title">还没有收藏的专辑</string>
+    <string name="empty_fav_albums_body">收藏的专辑会显示在这里。</string>
+    <string name="browse_albums">浏览专辑</string>
+    <string name="favorited_desc">已收藏</string>
+    <string name="empty_all_songs">曲庫没有歌曲</string>
+    <string name="empty_now_playing_title">没有正在播放的歌曲</string>
+    <string name="empty_now_playing_body">从歌曲、歌手或专辑选一首开始播放。</string>
+    <string name="empty_queue_title">队列是空的</string>
+    <string name="empty_queue_body">在歌曲上按右，选择加入队列。</string>
+
+    <!-- Counts -->
+    <string name="albums_loaded">已载入 %1$d 张</string>
+    <string name="songs_loaded">已载入 %1$d 首</string>
+
+    <!-- Resume prompt -->
+    <string name="resume_title">继续播放？</string>
+    <string name="resume_body">上次播放到《%1$s》，可以从原位置继续。</string>
+    <string name="last_source">上次列表</string>
+    <string name="later">稍后再听</string>
+
+    <!-- Errors (non-UI layers resolve these via L10n) -->
+    <string name="unknown_artist">未知歌手</string>
+    <string name="unknown_album">未知专辑</string>
+    <string name="err_not_configured">尚未设定服务器连接</string>
+    <string name="err_invalid_server_url">服务器地址無效：%1$s</string>
+    <string name="err_cannot_reach_server">无法连上服务器</string>
+    <string name="err_decode_failed">回应无法解码: %1$s</string>
+    <string name="err_unknown_server_error">未知服务器錯误</string>
+    <string name="err_album_not_found">找不到专辑 %1$s</string>
+    <string name="err_access_denied_401">服务器拒絕存取（401）</string>
+    <string name="err_server_response_code">服务器回应 %1$d</string>
+    <string name="err_empty_response">空回应</string>
+    <string name="err_pairing_service">无法启动局域网设置服务</string>
+    <string name="err_load_failed">加载失败</string>
+    <string name="err_load_songs">无法载入歌曲</string>
+    <string name="load_songs_failed">歌曲载入失败</string>
+    <string name="retry">重试</string>
+
+    <plurals name="songs_count">
+        <item quantity="other">%1$d 首歌曲</item>
+    </plurals>
+    <plurals name="albums_count">
+        <item quantity="other">%1$d 张专辑</item>
+    </plurals>
+    <plurals name="artists_count">
+        <item quantity="other">%1$d 位歌手</item>
+    </plurals>
+    <plurals name="playlists_count">
+        <item quantity="other">%1$d 个歌单</item>
+    </plurals>
+</resources>

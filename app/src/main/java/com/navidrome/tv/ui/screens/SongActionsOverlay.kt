@@ -19,10 +19,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.navidrome.tv.R
 import com.navidrome.tv.playback.PlaybackAccess
 import com.navidrome.tv.playback.SongPlaybackAction
 import com.navidrome.tv.ui.AppViewModel
@@ -45,20 +47,20 @@ fun SongActionsOverlay(vm: AppViewModel) {
     val close = remember { FocusRequester() }
     val items = buildList {
         add(SongMenuItem(if (primary == SongPlaybackAction.PAUSE) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-            primary.label) { vm.performSongPrimaryAction() })
-        if (playback.currentSong?.id == song.id) add(SongMenuItem(Icons.Filled.OpenInFull, "正在播放") {
+            stringResource(primary.labelRes)) { vm.performSongPrimaryAction() })
+        if (playback.currentSong?.id == song.id) add(SongMenuItem(Icons.Filled.OpenInFull, stringResource(R.string.now_playing)) {
             vm.navigate(Screen.NowPlaying)
         })
-        add(SongMenuItem(Icons.Filled.SkipNext, "下一首播放") {
+        add(SongMenuItem(Icons.Filled.SkipNext, stringResource(R.string.play_next)) {
             PlaybackAccess.playNext(context, song); vm.closeSongActions()
         })
-        add(SongMenuItem(Icons.Filled.AddToQueue, "加入队列") {
+        add(SongMenuItem(Icons.Filled.AddToQueue, stringResource(R.string.add_to_queue)) {
             PlaybackAccess.addToQueue(context, song); vm.closeSongActions()
         })
-        song.artistId?.let { id -> add(SongMenuItem(Icons.Filled.Person, "查看歌手") {
+        song.artistId?.let { id -> add(SongMenuItem(Icons.Filled.Person, stringResource(R.string.view_artist)) {
             vm.navigate(Screen.ArtistDetail(id, song.artist))
         }) }
-        song.albumId?.let { id -> add(SongMenuItem(Icons.Filled.Album, "查看专辑") {
+        song.albumId?.let { id -> add(SongMenuItem(Icons.Filled.Album, stringResource(R.string.view_album)) {
             vm.navigate(Screen.AlbumDetail(id))
         }) }
     }
@@ -80,11 +82,11 @@ fun SongActionsOverlay(vm: AppViewModel) {
                 .verticalScroll(rememberScrollState()).padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("歌曲操作", color = TextPrimary, fontSize = 26.sp, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.song_actions), color = TextPrimary, fontSize = 26.sp, modifier = Modifier.weight(1f))
                     FocusBox({ vm.closeSongActions() }, Modifier.size(36.dp).focusRequester(close)
                         .focusProperties { up = FocusRequester.Cancel; down = first; right = FocusRequester.Cancel },
                         scaleOnFocus = false) {
-                        Icon(Icons.Filled.Close, "关闭歌曲操作", tint = TextPrimary,
+                        Icon(Icons.Filled.Close, stringResource(R.string.close_song_actions), tint = TextPrimary,
                             modifier = Modifier.align(Alignment.Center).size(24.dp))
                     }
                 }

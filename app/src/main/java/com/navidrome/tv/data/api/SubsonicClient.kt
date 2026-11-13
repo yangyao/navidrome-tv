@@ -1,8 +1,10 @@
 package com.navidrome.tv.data.api
 
+import com.navidrome.tv.R
 import com.navidrome.tv.data.local.ConnectionSettings
 import com.navidrome.tv.model.Album
 import com.navidrome.tv.model.Song
+import com.navidrome.tv.util.L10n
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
@@ -50,7 +52,7 @@ class SubsonicClient(
     }
 
     private fun current(): ConnectionSettings =
-        settingsProvider() ?: throw AuthException("尚未设定服务器连接")
+        settingsProvider() ?: throw AuthException(L10n.str(R.string.err_not_configured))
 
     fun authParams(password: String): Map<String, String> {
         val salt = SubsonicAuth.salt()
@@ -86,7 +88,7 @@ class SubsonicClient(
     private suspend fun call(endpoint: String, extra: Map<String, String>): SubBody {
         val settings = current()
         val parsed = settings.serverUrl.trimEnd('/').toHttpUrlOrNull()
-            ?: throw NetworkException("服务器地址無效：${settings.serverUrl}")
+            ?: throw NetworkException(L10n.str(R.string.err_invalid_server_url, settings.serverUrl))
         val builder = okhttp3.HttpUrl.Builder()
             .scheme(parsed.scheme)
             .host(parsed.host)
@@ -105,19 +107,19 @@ class SubsonicClient(
         } catch (e: Exception) {
             android.util.Log.w("SubsonicClient", "call $endpoint failed: ${e.javaClass.simpleName}: ${e.message}", e)
 
-            throw NetworkException("無法连上服务器", e)
+            throw NetworkException(L10n.str(R.string.err_cannot_reach_server), e)
         }
         val envelope = try {
             json.decodeFromString(SubsonicEnvelope.serializer(), text)
         } catch (e: Exception) {
-            throw DecodeException("回应无法解码: ${text.take(300)}", e)
+            throw DecodeException(L10n.str(R.string.err_decode_failed, text.take(300)), e)
         }
         val body = envelope.body
         body.error?.let { err ->
             if (err.code == 40) throw AuthException(err.message)
             throw SubsonicApiException(err.code, err.message)
         }
-        if (body.status != "ok") throw SubsonicApiException(0, "未知服务器錯误")
+        if (body.status != "ok") throw SubsonicApiException(0, L10n.str(R.string.err_unknown_server_error))
         return body
     }
 
@@ -165,7 +167,7 @@ class SubsonicClient(
     suspend fun albumDetails(id: String): Pair<Album, List<Song>> =
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             val album = call("getAlbum", mapOf("id" to id)).album
-                ?: throw DecodeException("找不到专辑 $id")
+                ?: throw DecodeException(L10n.str(R.string.err_album_not_found, id))
             album.toAlbum() to (album.song?.map { it.toSong() } ?: emptyList())
         }
 
@@ -204,7 +206,7 @@ class SubsonicClient(
     fun streamUrl(songId: String, maxBitRate: Int? = null, format: String? = null): String {
         val settings = current()
         val parsed = settings.serverUrl.trimEnd('/').toHttpUrlOrNull()
-            ?: throw NetworkException("服务器地址無效")
+            ?: throw NetworkException(L10n.str(R.string.err_invalid_server_url))
         val b = okhttp3.HttpUrl.Builder()
             .scheme(parsed.scheme).host(parsed.host).port(parsed.port)
             .addEncodedPathSegments((parsed.encodedPath.trimEnd('/') + "/rest/stream").trimStart('/'))
@@ -248,9 +250,9 @@ private suspend fun okhttp3.Call.awaitText(): String = suspendCancellableCorouti
             val result = runCatching {
                 response.use {
                     if (!continuation.isActive) return
-                    if (it.code == 401) throw AuthException("服务器拒絕存取（401）")
-                    if (!it.isSuccessful) throw NetworkException("服务器回应 ${it.code}")
-                    it.body?.string() ?: throw DecodeException("空回应")
+                    if (it.code == 401) throw AuthException(L10n.str(R.string.err_access_denied_401))
+                    if (!it.isSuccessful) throw NetworkException(L10n.str(R.string.err_server_response_code, it.code))
+                    it.body?.string() ?: throw DecodeException(L10n.str(R.string.err_empty_response))
                 }
             }
             if (continuation.isActive) result.fold(continuation::resume, continuation::resumeWithException)

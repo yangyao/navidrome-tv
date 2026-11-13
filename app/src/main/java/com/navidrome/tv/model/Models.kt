@@ -41,15 +41,19 @@ data class Playlist(
 )
 
 /** 播放來源。點歌會替換當前來源；「下一首播放／加入仔列」不改變來源。 */
-sealed interface QueueSource {
-    val key: String
-    val displayName: String
+    /**
+     * 供快取／快照与「继续播放」使用的来源名。具名来源（歌手／专辑／歌单）使用用户数据，
+     * 固定来源使用英文规范名；界面显示时按 sourceKey 解析为本地化文案（见 MainActivity）。
+     */
+    sealed interface QueueSource {
+        val key: String
+        val displayName: String
 
-    /** 所有歌曲：依清單順序分頁載入。 */
-    data class AllSongs(val loadedIds: List<String> = emptyList()) : QueueSource {
-        override val key get() = "all_songs"
-        override val displayName get() = "所有歌曲"
-    }
+        /** 所有歌曲：依清單順序分頁載入。 */
+        data class AllSongs(val loadedIds: List<String> = emptyList()) : QueueSource {
+            override val key get() = "all_songs"
+            override val displayName get() = "All songs"
+        }
 
     data class AlbumSongs(val albumId: String, val albumName: String) : QueueSource {
         override val key get() = "album_$albumId"
@@ -68,19 +72,19 @@ sealed interface QueueSource {
 
     data object Starred : QueueSource {
         override val key get() = "starred"
-        override val displayName get() = "收藏"
+        override val displayName get() = "Favorites"
     }
 
     /** 全庫隨機播放：分批取得候選，以會話已播 ID 去重。 */
     data class Random(val seed: Long = System.nanoTime()) : QueueSource {
         override val key get() = "random_$seed"
-        override val displayName get() = "随机播放"
+        override val displayName get() = "Shuffle"
     }
 
     /** 手動插入的歌曲（下一首播放／加入仔列）。 */
     data class Manual(val songs: List<Song>) : QueueSource {
         override val key get() = "manual"
-        override val displayName get() = "手動加入"
+        override val displayName get() = "Added manually"
     }
 
     companion object {

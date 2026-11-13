@@ -15,10 +15,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.navidrome.tv.R
 import com.navidrome.tv.playback.PlaybackMode
 import androidx.compose.material3.AlertDialog
 import com.navidrome.tv.playback.PlaybackAccess
@@ -40,12 +42,12 @@ fun NowPlayingScreen(vm: AppViewModel) {
     ContentFocus(pause, song != null)
     if (song == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            EmptyState(Icons.Filled.MusicNote, "没有正在播放的歌曲", "从歌曲、歌手或专辑选一首开始播放。", "返回", { vm.back() })
+            EmptyState(Icons.Filled.MusicNote, stringResource(R.string.empty_now_playing_title), stringResource(R.string.empty_now_playing_body), stringResource(R.string.back), { vm.back() })
         }
         return
     }
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-      PageHeader("正在播放") { vm.back() }
+      PageHeader(stringResource(R.string.now_playing)) { vm.back() }
       BoxWithConstraints(Modifier.weight(1f)) {
         val coverSize = minOf(maxHeight - 24.dp, maxWidth * .38f, 340.dp).coerceAtLeast(140.dp)
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically,
@@ -60,12 +62,12 @@ fun NowPlayingScreen(vm: AppViewModel) {
                 TransportControls(state, false, { PlaybackAccess.previous(context) },
                     { PlaybackAccess.togglePause(context) }, { PlaybackAccess.next(context) }, pauseFocusRequester = pause)
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    PillButton(mode.label, when (mode) {
+                    PillButton(stringResource(mode.labelRes), when (mode) {
                         PlaybackMode.SHUFFLE -> Icons.Filled.Shuffle
                         PlaybackMode.REPEAT_ONE -> Icons.Filled.RepeatOne
                         else -> Icons.Filled.Repeat
                     }, false, Modifier.focusRequester(modeFocus)) { choosingMode = true }
-                    PillButton("播放队列", Icons.Filled.QueueMusic, false) { vm.navigate(Screen.Queue) }
+                    PillButton(stringResource(R.string.queue), Icons.Filled.QueueMusic, false) { vm.navigate(Screen.Queue) }
                 }
             }
         }
@@ -76,11 +78,11 @@ fun NowPlayingScreen(vm: AppViewModel) {
         LaunchedEffect(Unit) { selected.requestFocus() }
         AlertDialog(onDismissRequest = { choosingMode = false; modeFocus.requestFocus() },
             containerColor = BgPanel,
-            title = { Text("播放模式", color = TextPrimary) },
+            title = { Text(stringResource(R.string.playback_mode), color = TextPrimary) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     PlaybackMode.entries.forEach { option ->
-                        PillButton(option.label, if (option == mode) Icons.Filled.Check else null,
+                        PillButton(stringResource(option.labelRes), if (option == mode) Icons.Filled.Check else null,
                             option == mode, Modifier.fillMaxWidth().then(if (option == mode) Modifier.focusRequester(selected) else Modifier)) {
                             PlaybackAccess.setPlaybackMode(context, option)
                             choosingMode = false
@@ -102,9 +104,9 @@ fun QueueScreen(vm: AppViewModel) {
     if (focusedIndex > state.queue.lastIndex && state.queue.isNotEmpty()) focusedIndex = state.queue.lastIndex
     ContentFocus(requester, state.queue.isNotEmpty())
     Column(Modifier.fillMaxSize().padding(24.dp)) {
-        PageHeader("播放队列 · ${state.queue.size} 首") { vm.back() }
+        PageHeader(stringResource(R.string.queue_count_title, state.queue.size)) { vm.back() }
         if (state.queue.isEmpty()) {
-            EmptyState(Icons.Filled.QueueMusic, "队列是空的", "在歌曲上按右，选择加入队列。", "所有歌曲", { vm.switchNav(NavItem.SONGS) })
+            EmptyState(Icons.Filled.QueueMusic, stringResource(R.string.empty_queue_title), stringResource(R.string.empty_queue_body), stringResource(R.string.nav_songs), { vm.switchNav(NavItem.SONGS) })
         } else LazyColumn(state = listState, modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             itemsIndexed(state.queue) { index, song ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
@@ -128,7 +130,7 @@ fun QueueScreen(vm: AppViewModel) {
                     }
                     FocusBox({ PlaybackAccess.removeAt(context, index) }, modifier = Modifier.size(44.dp), scaleOnFocus = false) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Icon(Icons.Filled.Close, "从队列移除 ${song.title}", tint = TextPrimary, modifier = Modifier.size(24.dp))
+                            Icon(Icons.Filled.Close, stringResource(R.string.remove_from_queue, song.title), tint = TextPrimary, modifier = Modifier.size(24.dp))
                         }
                     }
                 }

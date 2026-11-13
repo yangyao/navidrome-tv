@@ -139,16 +139,29 @@ fun AppRoot(vm: AppViewModel) {
             androidx.compose.runtime.withFrameNanos { }
             resumeFocus.requestFocus()
         }
+        // 固定来源显示按 key 解析为本地化文案；具名来源（歌手／专辑／歌单）直接用快照名
+        val sourceLabel = when {
+            playback.sourceName.isEmpty() -> androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.last_source)
+            playback.sourceKey == "all_songs" -> androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.nav_songs)
+            playback.sourceKey == "starred" -> androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.nav_favorites)
+            playback.sourceKey.startsWith("random_") -> androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.shuffle_play)
+            playback.sourceKey == "manual" -> androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.queue_manual)
+            else -> playback.sourceName
+        }
         AlertDialog(
             onDismissRequest = { vm.dismissResumePrompt() },
-            title = { Text("继续播放？", color = TextPrimary) },
-            text = { Text("上次播放到《${playback.sourceName.ifEmpty { "上次列表" }}》，可以从原位置继续。", color = com.navidrome.tv.ui.theme.TextSecondary) },
+            title = { Text(androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.resume_title), color = TextPrimary) },
+            text = { Text(
+                androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.resume_body, sourceLabel),
+                color = com.navidrome.tv.ui.theme.TextSecondary) },
             confirmButton = {
-                com.navidrome.tv.ui.components.PillButton("继续播放", null, false,
+                com.navidrome.tv.ui.components.PillButton(
+                    androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.action_resume), null, false,
                     Modifier.focusRequester(resumeFocus)) { vm.resumePlayback() }
             },
             dismissButton = {
-                com.navidrome.tv.ui.components.PillButton("稍后再听", null, false) { vm.dismissResumePrompt() }
+                com.navidrome.tv.ui.components.PillButton(
+                    androidx.compose.ui.res.stringResource(com.navidrome.tv.R.string.later), null, false) { vm.dismissResumePrompt() }
             },
             containerColor = com.navidrome.tv.ui.theme.BgPanel,
         )

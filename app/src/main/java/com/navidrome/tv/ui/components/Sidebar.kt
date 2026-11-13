@@ -17,17 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.navidrome.tv.R
 import com.navidrome.tv.ui.theme.*
 
-enum class NavItem(val label: String, val icon: ImageVector) {
-    SONGS("所有歌曲", Icons.Filled.MusicNote),
-    ARTISTS("歌手", Icons.Filled.Person),
-    ALBUMS("专辑", Icons.Filled.Album),
-    PLAYLISTS("歌单", Icons.Filled.QueueMusic),
-    FAVORITES("收藏", Icons.Filled.Favorite),
-    NOW_PLAYING("正在播放", Icons.Filled.PlayArrow),
-    QUEUE("播放队列", Icons.Filled.QueueMusic),
-    SETTINGS("设定", Icons.Filled.Settings),
+enum class NavItem(val labelRes: Int, val icon: ImageVector) {
+    SONGS(R.string.nav_songs, Icons.Filled.MusicNote),
+    ARTISTS(R.string.nav_artists, Icons.Filled.Person),
+    ALBUMS(R.string.nav_albums, Icons.Filled.Album),
+    PLAYLISTS(R.string.nav_playlists, Icons.Filled.QueueMusic),
+    FAVORITES(R.string.nav_favorites, Icons.Filled.Favorite),
+    NOW_PLAYING(R.string.now_playing, Icons.Filled.PlayArrow),
+    QUEUE(R.string.queue, Icons.Filled.QueueMusic),
+    SETTINGS(R.string.nav_settings, Icons.Filled.Settings),
 }
 
 @Composable
@@ -57,7 +59,7 @@ fun AppSidebar(selected: NavItem, onSelect: (NavItem) -> Unit, modifier: Modifie
                 Row(Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Icon(item.icon, null, tint = if (selected == item) Accent else TextSecondary, modifier = Modifier.size(22.dp))
-                    Text(item.label, color = TextPrimary, fontSize = 17.sp, maxLines = 1)
+                    Text(stringResource(item.labelRes), color = TextPrimary, fontSize = 17.sp, maxLines = 1)
                 }
             }
         }

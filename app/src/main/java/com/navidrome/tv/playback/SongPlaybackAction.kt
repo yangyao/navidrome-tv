@@ -1,7 +1,9 @@
 package com.navidrome.tv.playback
 
-enum class SongPlaybackAction(val label: String) {
-    PLAY("播放"), PAUSE("暂停"), RESUME("继续播放");
+import com.navidrome.tv.R
+
+enum class SongPlaybackAction(val labelRes: Int) {
+    PLAY(R.string.action_play), PAUSE(R.string.action_pause), RESUME(R.string.action_resume);
 
     companion object {
         fun forSong(songId: String, state: PlaybackState): SongPlaybackAction = when {

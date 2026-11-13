@@ -122,7 +122,7 @@ class AppViewModel(private val app: TvApp) : ViewModel() {
             val url = "http://$ip:${running.port}/setup"
             _ui.value = _ui.value.copy(qrContent = "$url#${running.session.token}", qrUrlText = url, qrCountdownSec = 300)
         } else {
-            _ui.value = _ui.value.copy(loginError = "無法启動区网设定服务")
+            _ui.value = _ui.value.copy(loginError = com.navidrome.tv.util.L10n.str(com.navidrome.tv.R.string.err_pairing_service))
         }
     }
 
