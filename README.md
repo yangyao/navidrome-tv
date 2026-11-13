@@ -10,7 +10,8 @@
   <a href="#开始使用">开始使用</a> ·
   <a href="docs/getting-started.md">安装与连接</a> ·
   <a href="docs/development.md">构建与测试</a> ·
-  <a href="https://github.com/yangyao/navidrome-tv/issues">反馈问题</a>
+  <a href="https://github.com/yangyao/navidrome-tv/issues">反馈问题</a> ·
+  <a href="README.en.md">English</a>
 </p>
 
 音乐已经整理在自己的 Navidrome 里。打开电视，选一首想听的歌，让客厅也能播放这份音乐收藏。
